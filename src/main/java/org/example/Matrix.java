@@ -84,6 +84,14 @@ public class Matrix {
         return result;
     }
 
+    public double[][] asArray() {
+        double[][] result = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            System.arraycopy(matrix[i], 0, result[i], 0, columns);
+        }
+        return result;
+    }
+
     public void set(int row, int column, double value) {
         matrix[row][column] = value;
     }
