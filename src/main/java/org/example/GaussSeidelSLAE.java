@@ -9,39 +9,15 @@ public class GaussSeidelSLAE {
     private GaussSeidelSLAE() {
     }
 
-    private static boolean checkInput(double[][] a, double[] b) {
-        for (int i = 0; i < a.length; i++) {
-            if (a[i].length != b.length) {
-                System.out.println("Incompatible array sizes.");
-                return false;
-            }
-            if (a[i][i] == 0) {
-                System.out.println("Zeroes aren't allowed on a main diagonal.");
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean isComplete(double[] oldX, double[] newX, double epsilon) {
-        double sum = 0;
-
-        for (int i = 0; i < oldX.length; i++) {
-            sum += Math.pow(newX[i] - oldX[i], 2);
-        }
-
-        return Math.sqrt(sum) < epsilon;
-    }
-
     public static double[] solve(double[][] a, double[] b, double epsilon) {
         if (!checkInput(a, b)) {
-            throw new IllegalArgumentException("Incorrect coefficient arrays.");
+            throw new IllegalArgumentException("Incorrect input.");
         }
 
         int numOfEquations = b.length;
 
         double[] x = new double[numOfEquations];
-        Arrays.fill(x, 1);
+        Arrays.fill(x, 0);
         double[] prevX = Arrays.copyOf(x, x.length);
 
         int itersCount = 0;
@@ -74,6 +50,30 @@ public class GaussSeidelSLAE {
         System.out.println("Number of iterations: " + itersCount);
 
         return x;
+    }
+
+    private static boolean checkInput(double[][] a, double[] b) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i].length != b.length) {
+                System.out.println("Incompatible array sizes.");
+                return false;
+            }
+            if (a[i][i] == 0) {
+                System.out.println("Zeroes aren't allowed on a main diagonal.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isComplete(double[] oldX, double[] newX, double epsilon) {
+        double sum = 0;
+
+        for (int i = 0; i < oldX.length; i++) {
+            sum += Math.pow(newX[i] - oldX[i], 2);
+        }
+
+        return Math.sqrt(sum) < epsilon;
     }
 
 }
