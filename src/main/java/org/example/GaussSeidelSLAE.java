@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class GaussSeidelSLAE {
 
-    private static final int MAX_ITERS = 1000;
+    private static final int MAX_ITERS = 1_000_000;
 
     private GaussSeidelSLAE() {
     }
@@ -17,12 +17,11 @@ public class GaussSeidelSLAE {
         int numOfEquations = b.length;
 
         double[] x = new double[numOfEquations];
-        Arrays.fill(x, 0);
         double[] prevX = Arrays.copyOf(x, x.length);
 
         int itersCount = 0;
 
-        while (itersCount < MAX_ITERS) {
+        do {
             System.arraycopy(x, 0, prevX, 0, x.length);
 
             for (int i = 0; i < numOfEquations; i++) {
@@ -40,12 +39,9 @@ public class GaussSeidelSLAE {
                 x[i] = (b[i] - sum1 - sum2) / a[i][i];
             }
 
-            if (isComplete(prevX, x, epsilon)) {
-                break;
-            }
-
             itersCount++;
-        }
+
+        } while (!converged(prevX, x, epsilon) && itersCount < MAX_ITERS);
 
         System.out.println("Number of iterations: " + itersCount);
 
@@ -66,14 +62,14 @@ public class GaussSeidelSLAE {
         return true;
     }
 
-    private static boolean isComplete(double[] oldX, double[] newX, double epsilon) {
-        double sum = 0;
+    private static boolean converged(double[] prevX, double[] x, double epsilon) {
+        double sumOfSquares = 0;
 
-        for (int i = 0; i < oldX.length; i++) {
-            sum += Math.pow(newX[i] - oldX[i], 2);
+        for (int i = 0; i < prevX.length; i++) {
+            sumOfSquares += Math.pow(x[i] - prevX[i], 2);
         }
 
-        return Math.sqrt(sum) < epsilon;
+        return Math.sqrt(sumOfSquares) < epsilon;
     }
 
 }

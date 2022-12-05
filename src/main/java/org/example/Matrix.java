@@ -38,6 +38,77 @@ public class Matrix {
         }
     }
 
+    public double determinant() {
+        if (!this.isSquare()) {
+            throw new UnsupportedOperationException("Matrix needs to be square.");
+        }
+        if (this.getRows() == 1) {
+            return this.get(0, 0);
+        }
+        if (this.getRows() == 2) {
+            return (this.get(0, 0) * this.get(1, 1)) - (this.get(0, 1) * this.get(1, 0));
+        }
+        double sum = 0.0;
+        for (int i = 0; i < this.getColumns(); i++) {
+            sum += ((i % 2) == 0 ? 1 : -1) * this.get(0, i) * createSubMatrix(0, i).determinant();
+        }
+
+        return sum;
+    }
+
+    public Matrix createSubMatrix(int excluding_row, int excluding_col) {
+        Matrix m = new Matrix(this.getRows() - 1, this.getColumns() - 1);
+
+        int r = -1;
+        for (int i = 0; i < this.getRows(); i++) {
+            if (i == excluding_row) {
+                continue;
+            }
+            r++;
+            int c = -1;
+            for (int j = 0; j < this.getColumns(); j++) {
+                if (j == excluding_col) {
+                    continue;
+                }
+                m.set(r, ++c, this.get(i, j));
+            }
+        }
+
+        return m;
+    }
+
+    public Matrix inverse() {
+        return cofactor().transpose().multiplyByConstant(1.0 / determinant());
+    }
+
+    public Matrix multiplyByConstant(double constant) {
+        Matrix m = new Matrix(this.getRows(), this.getColumns());
+
+        for (int i = 0; i < m.getRows(); i++) {
+            for (int j = 0; j < m.getColumns(); j++) {
+                m.set(i, j, this.get(i, j) * constant);
+            }
+        }
+
+        return m;
+    }
+
+    public Matrix cofactor() {
+        Matrix m = new Matrix(this.getRows(), this.getColumns());
+
+        for (int i = 0; i < m.getRows(); i++) {
+            for (int j = 0; j < m.getColumns(); j++) {
+                m.set(i, j, ((i % 2) == 0 ? 1 : -1) * ((j % 2) == 0 ? 1 : -1) * createSubMatrix(i, j).determinant());
+            }
+        }
+
+        return m;
+    }
+
+    public boolean isSquare() {
+        return rows == columns;
+    }
+
     public Matrix transpose() {
         Matrix result = new Matrix(columns, rows);
 
@@ -111,12 +182,18 @@ public class Matrix {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (var row : matrix) {
-            for (var elem : row) {
-                sb.append(elem).append(" ");
+        sb.append("[");
+
+        for (int i = 0; i < rows ; i++) {
+            sb.append("[");
+            for (int j = 0; j < columns - 1; j++) {
+                sb.append(matrix[i][j]).append(", ");
             }
-            sb.append("\n");
+            sb.append(matrix[i][columns - 1])
+              .append("],\n");
         }
+        sb.replace(sb.length() - 2, sb.length(), "]");
+
         return sb.toString();
     }
 
