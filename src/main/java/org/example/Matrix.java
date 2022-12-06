@@ -155,6 +155,18 @@ public class Matrix {
         return result;
     }
 
+    public double norm() {
+        double sumOfSquares = 0;
+
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
+                sumOfSquares += Math.pow(Math.abs(get(i, j)), getRows());
+            }
+        }
+
+        return Math.pow(sumOfSquares, 1.0 / getRows());
+    }
+
     public double[][] asArray() {
         double[][] result = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
@@ -184,7 +196,7 @@ public class Matrix {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
-        for (int i = 0; i < rows ; i++) {
+        for (int i = 0; i < rows; i++) {
             sb.append("[");
             for (int j = 0; j < columns - 1; j++) {
                 sb.append(matrix[i][j]).append(", ");

@@ -6,23 +6,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
-    static double epsilon = 1e-10;
+    static double epsilon = 1e-5;
     static int MATRIX_SIZE = 5;
 
-    static double[][] a = new double[][]{{2, 1, 1}, {1, -1, 0}, {3, -1, 2}};
+    static double[][] a = new double[][]{{2, 1, 1},
+                                         {1, -1, 0},
+                                         {3, -1, 2}};
     static double[] b = new double[]{2, -2, 2};
 
     public static void main(String[] args) {
-//        randomAB();
+        randomAB(new Random().nextInt());
 //        test1();
         test2();
 //        test3();
-    }
-
-    static void test3() {
-        Matrix A = new Matrix(a);
-        Matrix B = new Matrix(new double[][]{b}).transpose();
-
     }
 
     static void test2() {
@@ -41,6 +37,34 @@ public class Main {
         for (int i = 0; i < 3; i++) {
             System.out.format("%f  %f\n", B.get(i, 0), newB.get(i, 0));
         }
+
+        Matrix D = new Matrix(C);
+        Matrix L = new Matrix(C);
+        Matrix U = new Matrix(C);
+        for (int i = 0; i < D.getRows(); i++) {
+            for (int j = 0; j < D.getColumns(); j++) {
+                if (i != j) {
+                    D.set(i, j, 0);
+                } else {
+                    U.set(i, j, 0);
+                    L.set(i, j, 0);
+                }
+                if (i < j) {
+                    L.set(i, j, 0);
+                } else {
+                    U.set(i, j, 0);
+                }
+            }
+        }
+
+        Matrix A2 = (L.add(D)).inverse().multiply(U).multiplyByConstant(-1);
+//        System.out.println(A2);
+
+        System.out.println("Norm: " + A2.norm());
+
+//        System.out.println(A);
+//        System.out.println();
+//        System.out.println(C);
     }
 
     private static void test1() {
@@ -49,8 +73,8 @@ public class Main {
         System.out.println(Arrays.toString(x));
     }
 
-    static void randomAB() {
-        Random random = ThreadLocalRandom.current();
+    static void randomAB(long seed) {
+        Random random = new Random(seed);
 
         a = new double[MATRIX_SIZE][MATRIX_SIZE];
         b = new double[MATRIX_SIZE];

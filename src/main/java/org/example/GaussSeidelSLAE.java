@@ -25,18 +25,17 @@ public class GaussSeidelSLAE {
             System.arraycopy(x, 0, prevX, 0, x.length);
 
             for (int i = 0; i < numOfEquations; i++) {
-                double sum1 = 0;
-                double sum2 = 0;
+                double sum = 0;
 
                 for (int j = 0; j < i; j++) {
-                    sum1 += a[i][j] * x[j];
+                    sum += a[i][j] * x[j];
                 }
 
                 for (int j = i + 1; j < numOfEquations; j++) {
-                    sum1 += a[i][j] * x[j];
+                    sum += a[i][j] * x[j];
                 }
 
-                x[i] = (b[i] - sum1 - sum2) / a[i][i];
+                x[i] = (b[i] - sum) / a[i][i];
             }
 
             itersCount++;
